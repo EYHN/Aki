@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>aki demo</title>
+</head>
+
+<body>
+
+    <script>
+        var r;
+        document.addEventListener('ready', () => {
+            new Aki([{
+                name: 'videoTest',
+                src: 'https://eyhn.github.io/Tamako/dist/6622b9482213785718310ee19d7bb27b.mp4',
+                type: 'video',
+                size: 16477,
+                onLoad: (res) => {
+                    const element = res.element;
+                    element.play();
+                    element.loop = true;
+                    document.body.appendChild(element);
+                }
+            },{
+                name: 'imageTest',
+                src: 'https://raw.githubusercontent.com/EYHN/Azusa/master/example.gif',
+                type: 'image',
+                size: 2297443,
+                onLoad: (res) => {
+                    document.body.appendChild(res.element);
+                }
+            }]).onProgress(console.log).loadAll()
+        });
+    </script>
+<script type="text/javascript" src="aki.js?7ea2ff2be484d8fc689f"></script></body>
+
+</html>
