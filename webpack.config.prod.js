@@ -18,7 +18,10 @@ module.exports = {
   ],
   output: {
     filename: "aki.js",
-    path: __dirname + "/dist"
+    path: __dirname + "/dist",
+    library: 'aki',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
 
   devtool: "source-map",
