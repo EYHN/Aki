@@ -17,7 +17,7 @@ import {
 
 export default class Aki extends ProgressEmitter {
   public loaders: Array<IResourceLoader<IResource>>;
-  constructor(resList: IResource[]) {
+  constructor(resList: IResource[] = []) {
     super();
     this.loaders = resList.map(res => this.createLoader(res));
   }
@@ -38,6 +38,11 @@ export default class Aki extends ProgressEmitter {
 
   public getAll() {
     return this.loaders.map(loader => loader.resource);
+  }
+
+  public pushLoader(res: IResource) {
+    this.loaders.push(this.createLoader(res));
+    return this;
   }
 
   public image(src: string, size?: number) {
