@@ -12,7 +12,9 @@ import {
   IResource,
   IResourceLoader,
   ITextResource,
-  IVideoResource
+  IVideoResource,
+  IProgressCallBack,
+  IResourceType
 } from './interface';
 
 export default class Aki extends ProgressEmitter {
@@ -45,64 +47,37 @@ export default class Aki extends ProgressEmitter {
     return this;
   }
 
-  public image(src: string, size?: number) {
-    return new Promise<IImageResource>((resolve, reject) => {
-      this.loaders.push(this.createLoader({
+  protected static fetchOne<T extends IResource>(type: IResourceType, src: string, onProgress?: IProgressCallBack) {
+    return new Promise<T>((resolve, reject) => {
+      const a = new Aki([{
         src,
-        size,
-        type: 'image',
-        onLoad: () => resolve(),
-        onError: () => reject()
-      }));
+        type,
+        onLoad: (r) => resolve(r as T),
+        onError: (e) => reject(e)
+      }]);
+      a.onProgress(onProgress);
+      a.loadAll();
     });
   }
 
-  public file(src: string, size?: number) {
-    return new Promise<IFileResource>((resolve, reject) => {
-      this.loaders.push(this.createLoader({
-        src,
-        size,
-        type: 'file',
-        onLoad: () => resolve(),
-        onError: () => reject()
-      }));
-    });
+  public static image(src: string, onProgress?: IProgressCallBack) {
+    return Aki.fetchOne<IImageResource>('image', src, onProgress);
   }
 
-  public text(src: string, size?: number) {
-    return new Promise<ITextResource>((resolve, reject) => {
-      this.loaders.push(this.createLoader({
-        src,
-        size,
-        type: 'text',
-        onLoad: () => resolve(),
-        onError: () => reject()
-      }));
-    });
+  public static file(src: string, onProgress?: IProgressCallBack) {
+    return Aki.fetchOne<IFileResource>('file', src, onProgress);
   }
 
-  public blob(src: string, size?: number) {
-    return new Promise<IBlobResource>((resolve, reject) => {
-      this.loaders.push(this.createLoader({
-        src,
-        size,
-        type: 'blob',
-        onLoad: () => resolve(),
-        onError: () => reject()
-      }));
-    });
+  public static text(src: string, onProgress?: IProgressCallBack) {
+    return Aki.fetchOne<ITextResource>('text', src, onProgress);
   }
 
-  public video(src: string, size?: number) {
-    return new Promise<IVideoResource>((resolve, reject) => {
-      this.loaders.push(this.createLoader({
-        src,
-        size,
-        type: 'video',
-        onLoad: () => resolve(),
-        onError: () => reject()
-      }));
-    });
+  public static blob(src: string, onProgress?: IProgressCallBack) {
+    return Aki.fetchOne<IBlobResource>('blob', src, onProgress);
+  }
+
+  public static video(src: string, onProgress?: IProgressCallBack) {
+    return Aki.fetchOne<IBlobResource>('video', src, onProgress);
   }
 
   private createLoader(res: IResource) {

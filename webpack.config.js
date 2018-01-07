@@ -13,10 +13,10 @@ var HtmlWebpackConfig = {
 
 module.exports = {
   entry: [
-    "./src/aki.ts"
+    "./src/example.ts"
   ],
   output: {
-    filename: "aki.js",
+    filename: "example.js",
     path: __dirname + "/dist"
   },
 
