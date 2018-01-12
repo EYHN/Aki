@@ -23,7 +23,7 @@ document.addEventListener('ready', () => {
       }
   }]).onProgress(console.log).loadAll();
 
-  Aki.image(require('file-loader!./example-static/image.gif')).then((res) => {
+  Aki.image(require('file-loader!./example-static/image.gif'), console.log).then((res) => {
       document.body.appendChild(res.element);
   });
 });

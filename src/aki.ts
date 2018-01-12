@@ -109,12 +109,17 @@ export default class Aki extends ProgressEmitter {
 
   private updateProgress() {
     const sized = this.loaders.filter(loader => typeof loader.resource.size !== 'undefined');
-    const sizedAverage = sum(...sized.map(loader => {
-      return loader.resource.size;
-    })) / sized.length;
+
+    const sizedAverage =
+      sum(...sized.map(loader => {
+        return loader.resource.size;
+      })) / sized.length ||
+      100;
+
     const sizes = this.loaders.map(loader => {
       return loader.resource.size || sizedAverage;
     });
+
     const TotalSize = sum(...sizes);
     const percent = sum(...this.loaders.map((loader, index) => {
       const size = sizes[index];
