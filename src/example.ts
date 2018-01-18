@@ -25,5 +25,5 @@ document.addEventListener('ready', () => {
 
   Aki.image(require('file-loader!./example-static/image.gif'), console.log).then((res) => {
       document.body.appendChild(res.element);
-  });
+  }).catch(console.log);
 });

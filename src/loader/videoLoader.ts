@@ -1,11 +1,18 @@
 import ResourceLoader from './resourceLoader';
 import { ProgressEmitter } from '../util/ProgressEmitter';
 import Ajax from '../util/ajax';
-import { IVideoResource, IVideoResourceLoader } from '../interface';
+import { IVideoResource, IVideoResourceLoader, CancelablePromise } from '../interface';
 
 export default class VideoLoader extends ResourceLoader<IVideoResource> implements IVideoResourceLoader {
+  private loadPromise: CancelablePromise<XMLHttpRequest>;
   public load() {
-    return this.ajaxLoad('blob').then(httpRequest => this.emitLoad(httpRequest));
+    this.loadPromise = this.ajaxLoad('blob');
+    return this.loadPromise.then(httpRequest => this.emitLoad(httpRequest));
+  }
+  public cancel() {
+    if (this.loadPromise) {
+      this.loadPromise.cancel();
+    }
   }
   private emitLoad(httpRequest: XMLHttpRequest) {
     const resUrl = window.URL.createObjectURL(httpRequest.response);

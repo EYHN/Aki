@@ -8,7 +8,9 @@ export interface IResource {
   onLoad?: (e: this) => any;
   onError?: (this: XMLHttpRequest, ev: ErrorEvent) => any;
   onTimeout?: (this: XMLHttpRequest, ev: ProgressEvent) => any;
+  onAbort?: () => any;
   timeout?: number;
+  retry?: boolean;
 }
 
 export interface IImageResource extends IResource {
@@ -57,6 +59,7 @@ export interface IProgressEmitter {
 export interface IResourceLoader<T extends IResource> extends IProgressEmitter {
   resource: T;
   load(): Promise<T>;
+  cancel(): void;
 }
 
 export interface IImageResourceLoader extends IResourceLoader<IImageResource> {
@@ -72,4 +75,9 @@ export interface IBlobResourceLoader extends IResourceLoader<IBlobResource> {
 }
 
 export interface IVideoResourceLoader extends IResourceLoader<IVideoResource> {
+}
+
+// tslint:disable-next-line:interface-name
+export interface CancelablePromise<T> extends Promise<T> {
+  cancel(): void;
 }

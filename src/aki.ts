@@ -14,7 +14,8 @@ import {
   ITextResource,
   IVideoResource,
   IProgressCallBack,
-  IResourceType
+  IResourceType,
+  CancelablePromise
 } from './interface';
 
 export default class Aki extends ProgressEmitter {
@@ -34,6 +35,17 @@ export default class Aki extends ProgressEmitter {
     return this;
   }
 
+  public cancel(name: string) {
+    const loader = this.loaders.find(res => res.resource.name === name);
+    loader.cancel();
+    return this;
+  }
+
+  public cancelAll() {
+    this.loaders.forEach(loader => loader.cancel());
+    return this;
+  }
+
   public get(name: string) {
     return this.loaders.find(loader => loader.resource.name === name).resource;
   }
@@ -48,16 +60,19 @@ export default class Aki extends ProgressEmitter {
   }
 
   protected static fetchOne<T extends IResource>(type: IResourceType, src: string, onProgress?: IProgressCallBack) {
-    return new Promise<T>((resolve, reject) => {
-      const a = new Aki([{
+    const a = new Aki();
+    const promise = new Promise<T>((resolve, reject) => {
+      a.pushLoader({
         src,
         type,
         onLoad: (r) => resolve(r as T),
         onError: (e) => reject(e)
-      }]);
+      });
       a.onProgress(onProgress);
       a.loadAll();
-    });
+    }) as CancelablePromise<T>;
+    promise.cancel = () => a.cancelAll();
+    return promise;
   }
 
   public static image(src: string, onProgress?: IProgressCallBack) {
